@@ -2,7 +2,7 @@ name: 并行50删除 OneDrive 文件夹
 
 on:
   schedule:
-    - cron: '20 */1 * * *'  # 每 4 小时运行一次
+    - cron: '0 * * * *'  # 每小时运行一次
   workflow_dispatch:  # 允许手动触发
 
 jobs:
@@ -22,6 +22,13 @@ jobs:
         run: |
           python -m pip install requests msal
           python -c "import requests; import msal; print('依赖安装成功')"
+
+      - name: 随机延迟
+        run: |
+          # 生成 30-58 分钟的随机延迟（以秒为单位）
+          DELAY=$((RANDOM % (58 * 60 - 30 * 60 + 1) + 30 * 60))
+          echo "等待 $DELAY 秒..."
+          sleep $DELAY
 
       - name: 删除 OneDrive 文件夹
         env:
