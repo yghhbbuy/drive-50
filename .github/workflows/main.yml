@@ -1,15 +1,22 @@
-name: 并行50删除 OneDrive 文件夹
+name: 并行删除 OneDrive 文件夹
 
 on:
   schedule:
-    - cron: '47 */1 * * *'  # 每 4 小时运行一次
+    - cron: '0 */1 * * *'  # 每隔一小时运行一次
   workflow_dispatch:  # 允许手动触发
 
 jobs:
   delete-folder:
     runs-on: ubuntu-latest
-
     steps:
+      - name: 随机等待 0-30 分钟（不计入运行时间）
+        run: |
+          # 生成0到1800秒之间的随机数（0到30分钟）
+          WAIT_TIME=$(shuf -i 0-1800 -n 1)
+          echo "随机等待时间：$WAIT_TIME 秒"
+          sleep $WAIT_TIME
+        timeout: 1800 # 最长等待30分钟
+
       - name: 检出仓库
         uses: actions/checkout@v3
 
@@ -23,7 +30,7 @@ jobs:
           python -m pip install requests msal
           python -c "import requests; import msal; print('依赖安装成功')"
 
-      - name: 删除 OneDrive 文件夹
+   - name: 删除 OneDrive 文件夹
         env:
           USER_ACCOUNTS: ${{ secrets.USER_ACCOUNTS }}  # 包含多个帐户信息的 JSON 字符串
         run: |
