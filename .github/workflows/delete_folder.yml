@@ -21,9 +21,7 @@ jobs:
       - name: 生成随机 cron 表达式
         id: generate_cron
         run: |
-          mkdir -p scripts
-          echo "import random; print(f'{random.randint(30, 58)} * * * *')" > scripts/generate_cron.py
-          cron_expression=$(python scripts/generate_cron.py)
+          cron_expression=$(python -c "import random; print(f'{random.randint(30, 58)} * * * *')")
           echo "::set-output name=cron_expression::$cron_expression"
 
       - name: 更新 GitHub Actions 工作流程
