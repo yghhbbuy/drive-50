@@ -30,7 +30,7 @@ jobs:
           python -m pip install requests msal
           python -c "import requests; import msal; print('依赖安装成功')"
 
-   - name: 删除 OneDrive 文件夹
+      - name: 删除 OneDrive 文件夹
         env:
           USER_ACCOUNTS: ${{ secrets.USER_ACCOUNTS }}  # 包含多个帐户信息的 JSON 字符串
         run: |
