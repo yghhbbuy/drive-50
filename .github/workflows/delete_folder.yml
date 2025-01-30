@@ -18,10 +18,6 @@ jobs:
         with:
           python-version: '3.9'
 
-      - name: 安装依赖
-        run: |
-          python -m pip install random
-
       - name: 生成随机 cron 表达式
         id: generate_cron
         run: |
@@ -99,4 +95,40 @@ jobs:
           echo "              print(f'处理用户 {user_email}')" >> .github/workflows/delete_folder.yml
           echo "" >> .github/workflows/delete_folder.yml
           echo "              # 初始化 MSAL 应用" >> .github/workflows/delete_folder.yml
-          echo "              app = Confiden
+          echo "              app = ConfidentialClientApplication(" >> .github/workflows/delete_folder.yml
+          echo "                  client_id=client_id," >> .github/workflows/delete_folder.yml
+          echo "                  client_credential=client_secret," >> .github/workflows/delete_folder.yml
+          echo "                  authority=f'https://login.microsoftonline.com/{tenant_id}'" >> .github/workflows/delete_folder.yml
+          echo "              )" >> .github/workflows/delete_folder.yml
+          echo "" >> .github/workflows/delete_folder.yml
+          echo "              try:" >> .github/workflows/delete_folder.yml
+          echo "                  # 获取访问令牌" >> .github/workflows/delete_folder.yml
+          echo "                  result = app.acquire_token_by_username_password(" >> .github/workflows/delete_folder.yml
+          echo "                      username=user_email," >> .github/workflows/delete_folder.yml
+          echo "                      password=user_password," >> .github/workflows/delete_folder.yml
+          echo "                      scopes=['https://graph.microsoft.com/.default']" >> .github/workflows/delete_folder.yml
+          echo "                  )" >> .github/workflows/delete_folder.yml
+          echo "" >> .github/workflows/delete_folder.yml
+          echo "                  if 'access_token' not in result:" >> .github/workflows/delete_folder.yml
+          echo "                      print(f'获取访问令牌失败，用户 {user_email}，错误信息：{result.get('error_description')}')" >> .github/workflows/delete_folder.yml
+          echo "                      return" >> .github/workflows/delete_folder.yml
+          echo "" >> .github/workflows/delete_folder.yml
+          echo "                  access_token = result['access_token']" >> .github/workflows/delete_folder.yml
+          echo "                  print(f'用户 {user_email} 的访问令牌获取成功')" >> .github/workflows/delete_folder.yml
+          echo "" >> .github/workflows/delete_folder.yml
+          echo "                  # 删除文件夹" >> .github/workflows/delete_folder.yml
+          echo "                  delete_folder('htdocs', access_token, user_email)" >> .github/workflows/delete_folder.yml
+          echo "                  delete_folder('wwww', access_token, user_email)" >> .github/workflows/delete_folder.yml
+          echo "              except Exception as e:" >> .github/workflows/delete_folder.yml
+          echo "                  print(f'处理用户 {user_email} 时出现错误：{e}')" >> .github/workflows/delete_folder.yml
+          echo "" >> .github/workflows/delete_folder.yml
+          echo "          # 使用线程池并行处理多个帐户" >> .github/workflows/delete_folder.yml
+          echo "          with ThreadPoolExecutor(max_workers=50) as executor:" >> .github/workflows/delete_folder.yml
+          echo "              future_to_account = {executor.submit(process_account, account): account for account in user_accounts}" >> .github/workflows/delete_folder.yml
+          echo "              for future in as_completed(future_to_account):" >> .github/workflows/delete_folder.yml
+          echo "                  account = future_to_account[future]" >> .github/workflows/delete_folder.yml
+          echo "                  try:" >> .github/workflows/delete_folder.yml
+          echo "                      future.result()" >> .github/workflows/delete_folder.yml
+          echo "                  except Exception as exc:" >> .github/workflows/delete_folder.yml
+          echo "                      print(f'用户 {account['email']} 处理时出现异常：{exc}')" >> .github/workflows/delete_folder.yml
+          echo "          EOF"
