@@ -1,9 +1,9 @@
 name: 并行50删除 OneDrive 文件夹
 
 on:
-  workflow_dispatch:  # 允许手动触发
   schedule:
     - cron: '0 0 * * *'  # 每天午夜更新 cron 任务
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
   update-cron:
@@ -21,12 +21,13 @@ jobs:
       - name: 生成随机 cron 表达式
         id: generate_cron
         run: |
-          cron_expression=$(python -c "import random; print(f'{random.randint(30, 58)} * * * *')")
-          echo "::set-output name=cron_expression::$cron_expression"
+          echo "import random; print(f'{random.randint(30, 58)} * * * *')" > generate_cron.py
+          cron_expression=$(python generate_cron.py)
+          echo "cron_expression=$cron_expression" >> $GITHUB_ENV
 
       - name: 更新 GitHub Actions 工作流程
         run: |
-          cron_expression=${{ steps.generate_cron.outputs.cron_expression }}
+          cron_expression=${{ env.cron_expression }}
           echo "name: 并行50删除 OneDrive 文件夹" > .github/workflows/delete_folder.yml
           echo "on:" >> .github/workflows/delete_folder.yml
           echo "  schedule:" >> .github/workflows/delete_folder.yml
