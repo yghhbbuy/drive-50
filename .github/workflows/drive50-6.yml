@@ -1,8 +1,8 @@
-name: 并行50删除 OneDrive 文件夹6
+name: 并行50删除 OneDrive 文件夹
 
 on:
   schedule:
-    - cron: '*/27 * * * *'  # 每 4 小时运行一次
+    - cron: '47 */1 * * *'  # 每 4 小时运行一次
   workflow_dispatch:  # 允许手动触发
 
 jobs:
@@ -25,7 +25,7 @@ jobs:
 
       - name: 删除 OneDrive 文件夹
         env:
-          USER_ACCOUNTS: ${{ secrets.USER_ACCOUNTS }}  # 包含多个帐户信息的 JSON 字符串
+          USER_ACCOUNTSE: ${{ secrets.USER_ACCOUNTSE }}  # 包含多个帐户信息的 JSON 字符串
         run: |
           python - <<EOF
           import os
@@ -35,7 +35,7 @@ jobs:
           import json
           from concurrent.futures import ThreadPoolExecutor, as_completed
 
-          user_accounts = json.loads(os.getenv("USER_ACCOUNTS"))
+          USER_ACCOUNTSE = json.loads(os.getenv("USER_ACCOUNTSE"))
 
           def delete_folder(folder_path, access_token, user_email):
               url = f"https://graph.microsoft.com/v1.0/me/drive/root:/{folder_path}"
@@ -98,7 +98,7 @@ jobs:
 
           # 使用线程池并行处理多个帐户
           with ThreadPoolExecutor(max_workers=50) as executor:
-              future_to_account = {executor.submit(process_account, account): account for account in user_accounts}
+              future_to_account = {executor.submit(process_account, account): account for account in USER_ACCOUNTSE}
               for future in as_completed(future_to_account):
                   account = future_to_account[future]
                   try:
