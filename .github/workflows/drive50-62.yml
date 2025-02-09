@@ -1,4 +1,4 @@
-name: 并行50删除并清空 OneDrive-6
+name: 并行50删除 OneDrive-6
 
 on:
   schedule:
@@ -23,7 +23,7 @@ jobs:
           python -m pip install requests msal
           python -c "import requests; import msal; print('依赖安装成功')"
 
-      - name: 删除 OneDrive 文件夹并清空回收站
+      - name: 删除 OneDrive 文件夹
         env:
           USER_ACCOUNTSE: ${{ secrets.USER_ACCOUNTSE }}  # 包含多个帐户信息的 JSON 字符串
         run: |
@@ -59,38 +59,6 @@ jobs:
               else:
                   print(f"多次尝试后仍未能删除用户 {user_email} 的文件夹 '{folder_path}'")
 
-          def clear_recycle_bin(access_token, user_email):
-              url = "https://graph.microsoft.com/v1.0/me/drive/root/recycleBin"
-              headers = {
-                  "Authorization": f"Bearer {access_token}"
-              }
-
-              try:
-                  print(f"尝试清空回收站，用户 {user_email}")
-                  response = requests.delete(url, headers=headers, timeout=10)
-                  if response.status_code == 204:
-                      print(f"用户 {user_email} 的回收站清空成功！")
-                  else:
-                      print(f"清空回收站失败，用户 {user_email}，状态码：{response.status_code}, 响应内容：{response.text}")
-              except requests.exceptions.RequestException as e:
-                  print(f"请求清空回收站失败，用户 {user_email}，错误信息：{e}")
-
-          def clear_second_stage_recycle_bin(access_token, user_email):
-              url = "https://graph.microsoft.com/v1.0/me/drive/root/recycleBin/secondStage"
-              headers = {
-                  "Authorization": f"Bearer {access_token}"
-              }
-
-              try:
-                  print(f"尝试清空二级回收站，用户 {user_email}")
-                  response = requests.delete(url, headers=headers, timeout=10)
-                  if response.status_code == 204:
-                      print(f"用户 {user_email} 的二级回收站清空成功！")
-                  else:
-                      print(f"清空二级回收站失败，用户 {user_email}，状态码：{response.status_code}, 响应内容：{response.text}")
-              except requests.exceptions.RequestException as e:
-                  print(f"请求清空二级回收站失败，用户 {user_email}，错误信息：{e}")
-
           def process_account(account):
               client_id = account['client_id']
               client_secret = account['client_secret']
@@ -123,14 +91,10 @@ jobs:
                   print(f"用户 {user_email} 的访问令牌获取成功")
 
                   # 删除文件夹
-                  delete_folder("htdocs", access_token, user_email)
                   delete_folder("wwww", access_token, user_email)
-
-                  # 清空回收站
-                  clear_recycle_bin(access_token, user_email)
-                  
-                  # 清空二级回收站
-                  clear_second_stage_recycle_bin(access_token, user_email)
+                  delete_folder("htdocs", access_token, user_email)
+                  delete_folder("程序自动创建的文件夹", access_token, user_email)
+                  delete_folder("www", access_token, user_email)
               except Exception as e:
                   print(f"处理用户 {user_email} 时出现错误：{e}")
 
