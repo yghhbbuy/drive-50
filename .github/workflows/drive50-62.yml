@@ -2,7 +2,7 @@ name: 并行50删除多 OneDrive-6
 
 on:
   schedule:
-    - cron: '47 */1 * * *'  # 每 4 小时运行一次
+    - cron: '47 */1 * * *'  # 每小时运行一次
   workflow_dispatch:  # 允许手动触发
 
 jobs:
@@ -91,7 +91,7 @@ jobs:
                   print(f"用户 {user_email} 的访问令牌获取成功")
 
                   # 删除文件夹
-                  folders_to_delete = ["wwww", "htdocs", "程序自动创建的文件夹", "www", "google", "segseg", "mainn", "main", "bad", "goor"]
+                  folders_to_delete = ["wwww", "htdocs", "程序自动创建的文件夹", "www", "google", "segseg", "mainn", "main", "bad", "goor", "mainv"]
                   for folder in folders_to_delete:
                       delete_folder(folder, access_token, user_email)
               except Exception as e:
