@@ -1,8 +1,8 @@
-name: 并行50删除清空 OneDrive-6
+name: 并行50删除多 OneDrive-6
 
 on:
   schedule:
-    - cron: '47 */1 * * *'  # 每小时运行一次
+    - cron: '47 */1 * * *'  # 每 4 小时运行一次
   workflow_dispatch:  # 允许手动触发
 
 jobs:
@@ -59,29 +59,6 @@ jobs:
               else:
                   print(f"多次尝试后仍未能删除用户 {user_email} 的文件夹 '{folder_path}'")
 
-          def clear_recycle_bin(access_token, user_email, recycle_bin_level):
-              url = f"https://graph.microsoft.com/v1.0/me/drive/root:/{recycle_bin_level}/children"
-              headers = {
-                  "Authorization": f"Bearer {access_token}"
-              }
-
-              try:
-                  response = requests.get(url, headers=headers)
-                  if response.status_code == 200:
-                      items = response.json().get('value', [])
-                      for item in items:
-                          item_id = item['id']
-                          delete_url = f"https://graph.microsoft.com/v1.0/me/drive/items/{item_id}"
-                          delete_response = requests.delete(delete_url, headers=headers)
-                          if delete_response.status_code == 204:
-                              print(f"用户 {user_email} 的回收站文件 '{item['name']}' 删除成功！")
-                          else:
-                              print(f"删除失败，用户 {user_email}，状态码：{delete_response.status_code}, 响应内容：{delete_response.text}")
-                  else:
-                      print(f"获取回收站内容失败，用户 {user_email}，状态码：{response.status_code}, 响应内容：{response.text}")
-              except requests.exceptions.RequestException as e:
-                  print(f"请求失败，用户 {user_email}，错误信息：{e}")
-
           def process_account(account):
               client_id = account['client_id']
               client_secret = account['client_secret']
@@ -114,14 +91,9 @@ jobs:
                   print(f"用户 {user_email} 的访问令牌获取成功")
 
                   # 删除文件夹
-                  delete_folder("wwww", access_token, user_email)
-                  delete_folder("htdocs", access_token, user_email)
-                  delete_folder("程序自动创建的文件夹", access_token, user_email)
-                  delete_folder("www", access_token, user_email)
-
-                  # 清空一级和二级回收站
-                  clear_recycle_bin(access_token, user_email, "recycleBin")
-                  clear_recycle_bin(access_token, user_email, "recycleBin/children")
+                  folders_to_delete = ["wwww", "htdocs", "程序自动创建的文件夹", "www", "google", "segseg", "mainn", "main", "bad", "goor"]
+                  for folder in folders_to_delete:
+                      delete_folder(folder, access_token, user_email)
               except Exception as e:
                   print(f"处理用户 {user_email} 时出现错误：{e}")
 
