@@ -2,7 +2,7 @@ name: 并行50删除 OneDrive 文件夹
 
 on:
   schedule:
-    - cron: '9 */3 * * *'  # 每 4 小时运行一次
+    - cron: '9 */5 * * *'  # 每 4 小时运行一次
   workflow_dispatch:  # 允许手动触发
 
 jobs:
