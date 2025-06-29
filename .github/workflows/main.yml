@@ -1,4 +1,4 @@
-name: 并行50删除 OneDrive 文件夹-2
+name: 清磁盘-7-2
 
 on:
   schedule:
